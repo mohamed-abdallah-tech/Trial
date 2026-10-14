@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrustic | مولد وتصميم بوستات السوشيال ميديا</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- html2canvas for high quality 1080x1080 export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0E5795',
+                        primaryDark: '#072b4a',
+                        accent: '#00A896',
+                        accentLight: '#02c39a',
+                        surface: '#0B1528'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .en-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* 1080x1080 Canvas Container */
+        #poster-frame {
+            width: 1080px;
+            height: 1080px;
+            min-width: 1080px;
+            min-height: 1080px;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        /* Tech Grid */
+        .tech-grid {
+            background-image: radial-gradient(rgba(0, 168, 150, 0.15) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* Neon Glow Effects */
+        .glow-cyan {
+            box-shadow: 0 0 40px -10px rgba(0, 168, 150, 0.4);
+        }
+        .glow-blue {
+            box-shadow: 0 0 50px -10px rgba(14, 87, 149, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen py-8 flex flex-col items-center">
+
+    <!-- Top Toolbar Controls -->
+    <header class="w-full max-w-5xl px-4 mb-6 flex flex-wrap items-center justify-between gap-4 bg-slate-800/90 backdrop-blur p-4 rounded-2xl border border-slate-700 shadow-xl">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">🎨</span>
+            <div>
+                <h1 class="font-extrabold text-lg text-white">استوديو تصميم بوستات Entrustic</h1>
+                <p class="text-xs text-slate-400">أبعاد قياسية 1080 × 1080 بيكسل (1:1) للفيسبوك وإنستغرام</p>
+            </div>
+        </div>
+
+        <!-- Switcher Buttons -->
+        <div class="flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-xl border border-slate-700">
+            <button onclick="switchPoster('pos')" id="btn-pos" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-primary text-white shadow-md">
+                🛒 نظام المحلات والكاشير (POS)
+            </button>
+            <button onclick="switchPoster('gym')" id="btn-gym" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-300 hover:text-white hover:bg-slate-800">
+                🏋️‍♂️ نظام إدارة الجيم (Gym)
+            </button>
+        </div>
+
+        <!-- Download Action Button -->
+        <button onclick="downloadPoster()" id="download-btn" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-accent to-emerald-500 hover:from-accentLight hover:to-emerald-400 text-slate-950 font-black text-sm shadow-lg transition transform active:scale-95 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>تحميل الصورة بجودة عالية 📥</span>
+        </button>
+    </header>
+
+    <!-- Preview Container Scaled for Screen Fit -->
+    <div class="overflow-auto max-w-full p-4 flex justify-center items-center">
+        <!-- Scale Wrapper to show 1080x1080 nicely on smaller screens -->
+        <div class="origin-top transition-transform duration-300 transform scale-[0.65] sm:scale-[0.75] md:scale-[0.85] lg:scale-100 mb-[-300px] lg:mb-0">
+            
+            <!-- THE 1080x1080 RENDER TARGET -->
+            <div id="poster-frame" class="relative bg-[#070E1A] overflow-hidden text-white flex flex-col justify-between p-12 select-none border border-slate-800">
+                
+                <!-- Background Atmospheric Lights & Grids -->
+                <div class="absolute inset-0 tech-grid opacity-35 pointer-events-none"></div>
+                <div class="absolute -top-32 -left-32 w-96 h-96 bg-primary/40 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-accent/30 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary/15 rounded-full blur-[140px] pointer-events-none"></div>
+
+                <!-- TOP HEADER: Official Logo & Tagline -->
+                <div class="relative z-20 flex flex-col items-center text-center">
+                    <div class="bg-white/95 backdrop-blur px-8 py-3.5 rounded-2xl shadow-2xl border border-white/20 inline-flex items-center justify-center">
+                        <img src="logo_official.png" alt="Entrustic" class="h-14 w-auto object-contain">
+                    </div>
+                </div>
+
+                <!-- ================= POSTER 1: POS & RETAIL SYSTEM ================= -->
+                <div id="content-pos" class="relative z-20 flex flex-col items-center justify-between flex-1 mt-6">
+                    
+                    <!-- Headlines -->
+                    <div class="text-center space-y-2">
+                        <h2 class="en-font text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300 drop-shadow">
+                            SMART POS & RETAIL SYSTEM
+                        </h2>
+                        <p class="en-font text-xl font-bold text-accent tracking-wide">
+                            Speed • Stock Control • Accurate Profits
+                        </p>
+                    </div>
+
+                    <!-- Center Showcase (Dual Screen POS Terminal Mockup) -->
+                    <div class="w-full max-w-4xl my-auto grid grid-cols-12 gap-6 items-center">
+                        
+                        <!-- Main Touchscreen Terminal Mockup (8 Cols) -->
+                        <div class="col-span-8 glass-card rounded-3xl p-5 border border-slate-700/80 shadow-2xl glow-blue relative">
+                            
+                            <!-- Fake Window Bar -->
+                            <div class="flex items-center justify-between border-b border-slate-700/80 pb-3 mb-4 text-xs font-bold">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                    <span class="text-slate-400 mr-2 en-font">Entrustic POS v3.4 • Cashier Mode</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    متصل بالخزينة
+                                </span>
+                            </div>
+
+                            <!-- POS Dashboard Content -->
+                            <div class="grid grid-cols-12 gap-3">
+                                
+                                <!-- Quick Select Products (7 Cols) -->
+                                <div class="col-span-7 space-y-2.5">
+                                    <div class="flex items-center justify-between text-xs text-slate-400 font-bold px-1">
+                                        <span>الأصناف الأكثر طلباً</span>
+                                        <span class="en-font text-[10px] text-accent">BARCODE READY</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold">
+                                        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-accent transition cursor-pointer">
+                                            <div class="text-xl mb-1">📦</div>
+                                            <span class="block text-[11px]">صنف أ</span>
+                                            <span class="en-font text-emerald-400 text-[10px]">EGP 150</span>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-accent transition cursor-pointer">
+                                            <div class="text-xl mb-1">🏷️</div>
+                                            <span class="block text-[11px]">صنف ب</span>
+                                            <span class="en-font text-emerald-400 text-[10px]">EGP 280</span>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-accent transition cursor-pointer">
+                                            <div class="text-xl mb-1">🥤</div>
+                                            <span class="block text-[11px]">صنف ج</span>
+                                            <span class="en-font text-emerald-400 text-[10px]">EGP 45</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Stats Mini Banner -->
+                                    <div class="mt-3 p-3 rounded-xl bg-primary/25 border border-primary/40 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-[10px] text-slate-300 block">إجمالي مبيعات اليوم</span>
+                                            <span class="en-font text-lg font-black text-white">EGP 14,850</span>
+                                        </div>
+                                        <span class="text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-bold">+24% أرباح</span>
+                                    </div>
+                                </div>
+
+                                <!-- Current Invoice Bill Slip (5 Cols) -->
+                                <div class="col-span-5 bg-slate-950/80 rounded-2xl p-3 border border-slate-800 flex flex-col justify-between text-xs">
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between font-black border-b border-slate-800 pb-1.5 text-slate-300">
+                                            <span>الفاتورة #1042</span>
+                                            <span class="en-font text-accent">كاشير 1</span>
+                                        </div>
+                                        <div class="space-y-1.5 text-[11px] text-slate-400">
+                                            <div class="flex justify-between">
+                                                <span>2x منتج رئيسي</span>
+                                                <span class="en-font text-white">300.00</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span>1x كابل أصلي</span>
+                                                <span class="en-font text-white">120.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-slate-800 pt-2 mt-2">
+                                        <div class="flex justify-between font-black text-sm text-white">
+                                            <span>الإجمالي:</span>
+                                            <span class="en-font text-accentLight text-base">420.00 EGP</span>
+                                        </div>
+                                        <button class="w-full mt-2 py-2 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs text-center shadow-lg">
+                                            طباعة الفاتورة ⚡
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Side Floating 3D Feature Badges (4 Cols) -->
+                        <div class="col-span-4 space-y-4">
+                            
+                            <!-- Badge 1: Offline -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-cyan-400">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    📶
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">Works 100% Offline</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">شغال بلا توقف حتى بدون إنترنت</p>
+                                </div>
+                            </div>
+
+                            <!-- Badge 2: Stock -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-emerald-400">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    📦
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">Smart Stock Alerts</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">تنبيهات فورية بنواقص الأصناف</p>
+                                </div>
+                            </div>
+
+                            <!-- Badge 3: Profit -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-primary-light">
+                                <div class="w-12 h-12 rounded-xl bg-primary/30 text-blue-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    📊
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">Live Profit Reports</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">حسابات أرباح وورديات دقيقة</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Bar Highlight -->
+                    <div class="text-center pb-2">
+                        <span class="inline-block px-6 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-sm font-bold text-slate-300">
+                            ✨ كاشير فائق السرعة • فواتير فورية • إدارة مخازن ذكية
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- ================= POSTER 2: GYM MANAGEMENT SYSTEM ================= -->
+                <div id="content-gym" class="relative z-20 flex flex-col items-center justify-between flex-1 mt-6 hidden">
+                    
+                    <!-- Headlines -->
+                    <div class="text-center space-y-2">
+                        <h2 class="en-font text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300 drop-shadow">
+                            SMART GYM MANAGEMENT SYSTEM
+                        </h2>
+                        <p class="en-font text-xl font-bold text-accent tracking-wide">
+                            Member Access • Subscriptions • WhatsApp Automation
+                        </p>
+                    </div>
+
+                    <!-- Center Showcase (Gym Smart Control Terminal) -->
+                    <div class="w-full max-w-4xl my-auto grid grid-cols-12 gap-6 items-center">
+                        
+                        <!-- Main Gym Member Card & Access Terminal (8 Cols) -->
+                        <div class="col-span-8 glass-card rounded-3xl p-6 border border-slate-700/80 shadow-2xl glow-cyan relative">
+                            
+                            <!-- Fake Window Bar -->
+                            <div class="flex items-center justify-between border-b border-slate-700/80 pb-3 mb-5 text-xs font-bold">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                    <span class="text-slate-400 mr-2 en-font">Entrustic Gym Gatekeeper 3.0</span>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                    بوابة الدخول الذكية: جاهزة
+                                </span>
+                            </div>
+
+                            <!-- Live Member Access Granted Screen -->
+                            <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-3xl">
+                                        🏋️
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-lg font-black text-white">أحمد محمود السعيد</h3>
+                                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">عضو VIP</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400 mt-1">
+                                            اشتراك سنوي شامل (حديد + سبا) • متبقي 42 يوم
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-center pl-2">
+                                    <span class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs block shadow-lg">
+                                        تم فتح البوابة ✓
+                                    </span>
+                                    <span class="text-[10px] text-slate-400 mt-1 block">ACCESS GRANTED</span>
+                                </div>
+                            </div>
+
+                            <!-- Mini Metrics Under Member -->
+                            <div class="grid grid-cols-3 gap-3 mt-4 text-center">
+                                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                                    <span class="text-[11px] text-slate-400 font-bold block">المشتركين النشطين</span>
+                                    <span class="en-font text-xl font-black text-white">482 مشترك</span>
+                                </div>
+                                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                                    <span class="text-[11px] text-slate-400 font-bold block">تجديدات اليوم بالواتساب</span>
+                                    <span class="en-font text-xl font-black text-accentLight">18 تجديد</span>
+                                </div>
+                                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                                    <span class="text-[11px] text-slate-400 font-bold block">حضور الكباتن (PT)</span>
+                                    <span class="en-font text-xl font-black text-emerald-400">100% مكتمل</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Side Floating 3D Feature Badges (4 Cols) -->
+                        <div class="col-span-4 space-y-4">
+                            
+                            <!-- Badge 1: WhatsApp -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-emerald-400">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    💬
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">WhatsApp Auto Remind</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">تنبيهات تجديد تلقائية قبل 3 أيام</p>
+                                </div>
+                            </div>
+
+                            <!-- Badge 2: Gates -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-cyan-400">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    🚪
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">Smart Turnstiles</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">ربط البوابات ومنع المنتهي</p>
+                                </div>
+                            </div>
+
+                            <!-- Badge 3: Offline -->
+                            <div class="glass-badge p-4 rounded-2xl flex items-center gap-3.5 border-l-4 border-l-primary-light">
+                                <div class="w-12 h-12 rounded-xl bg-primary/30 text-blue-300 flex items-center justify-center text-2xl font-bold shrink-0">
+                                    📶
+                                </div>
+                                <div>
+                                    <h4 class="en-font font-black text-base text-white">100% Offline Stable</h4>
+                                    <p class="text-xs text-slate-300 font-semibold">السيستم شغال حتى لو النت فصل</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Bar Highlight -->
+                    <div class="text-center pb-2">
+                        <span class="inline-block px-6 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-sm font-bold text-slate-300">
+                            ⚡ تنظيم كامل للاشتراكات • حماية المبيعات • رضا المشتركين
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Toggling and 1080x1080 Export -->
+    <script>
+        let currentMode = 'pos';
+
+        function switchPoster(mode) {
+            currentMode = mode;
+            const posContent = document.getElementById('content-pos');
+            const gymContent = document.getElementById('content-gym');
+            const btnPos = document.getElementById('btn-pos');
+            const btnGym = document.getElementById('btn-gym');
+
+            if (mode === 'pos') {
+                posContent.classList.remove('hidden');
+                gymContent.classList.add('hidden');
+                
+                btnPos.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-primary text-white shadow-md';
+                btnGym.className = 'px-4 py-2 rounded-lg text-xs font-bold transition text-slate-300 hover:text-white hover:bg-slate-800';
+            } else {
+                posContent.classList.add('hidden');
+                gymContent.classList.remove('hidden');
+
+                btnGym.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-primary text-white shadow-md';
+                btnPos.className = 'px-4 py-2 rounded-lg text-xs font-bold transition text-slate-300 hover:text-white hover:bg-slate-800';
+            }
+        }
+
+        async function downloadPoster() {
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span>جاري تجهيز الصورة بدقة فائقة... ⏳</span>';
+            btn.disabled = true;
+
+            const poster = document.getElementById('poster-frame');
+
+            try {
+                // Render at high resolution
+                const canvas = await html2canvas(poster, {
+                    scale: 2, // 2x scale results in crisp 2160x2160 ultra HD
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#070E1A'
+                });
+
+                // Trigger Download
+                const link = document.createElement('a');
+                link.download = `Entrustic_${currentMode.toUpperCase()}_Ad_Post.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error('Error generating image:', err);
+                alert('حدث خطأ أثناء تحميل الصورة، يمكنك عمل سكرين شوت بجودة عالية.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
